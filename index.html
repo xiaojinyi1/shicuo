@@ -225,6 +225,7 @@
     .hero-art { position: relative; min-height: 420px; display: flex; align-items: center; justify-content: center; }
     .note-card {
       position: relative;
+      z-index: 1;
       width: min(100%, 430px);
       padding: 28px 28px 24px;
       border: 1px solid rgba(217, 210, 195, .9);
@@ -279,6 +280,18 @@
       font-family: var(--mono);
       font-size: 8.5px;
     }
+    .note-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 18px;
+      padding-top: 12px;
+      padding-right: 58px;
+      border-top: 1px solid var(--line);
+    }
+    .note-foot small { color: #5e7562; font-family: var(--mono); font-size: 7.5px; letter-spacing: .12em; }
+    .note-foot strong { color: var(--sage); font-family: var(--serif); font-size: 16px; }
     .stamp {
       position: absolute;
       right: 24px;
@@ -294,9 +307,10 @@
     }
     .streak {
       position: absolute;
-      left: 2px;
-      bottom: 34px;
-      z-index: 2;
+      left: -24px;
+      top: -62px;
+      bottom: auto;
+      z-index: 0;
       min-width: 146px;
       padding: 12px 15px;
       border: 1px solid rgba(111, 139, 116, .25);
@@ -309,8 +323,9 @@
     .streak strong { display: block; margin-top: 4px; font-family: var(--serif); font-size: 17px; }
     .hero-seal {
       position: absolute;
-      right: 10px;
-      bottom: 8px;
+      right: -14px;
+      bottom: -14px;
+      z-index: 3;
       width: 84px;
       height: 84px;
       display: grid;
@@ -550,14 +565,15 @@
       .header-inner { height: 60px; }
       .demo-pill { font-size: 8px; padding: 6px 8px; }
       .hero { padding: 48px 0 42px; }
-      .hero-title { font-size: clamp(40px, 12vw, 56px); }
+      .hero-grid > * { min-width: 0; }
+      .hero-title { font-size: clamp(32px, 9.2vw, 44px); }
       .hero-lede { font-size: 12px; }
       .hero-art { min-height: 375px; }
       .note-card { padding: 22px 20px; }
       .note-title { font-size: 20px; }
       .stamp { right: 18px; top: 70px; font-size: 11px; }
       .hero-seal { width: 68px; height: 68px; font-size: 39px; right: 0; bottom: 0; }
-      .streak { left: 0; bottom: 22px; min-width: 130px; padding: 10px 12px; }
+      .streak { display: none; }
       .stat-strip { grid-template-columns: repeat(2, 1fr); }
       .section { padding: 52px 0; }
       .section-head { display: block; }
@@ -637,8 +653,8 @@
                 <p>不是不会求导，而是看见“恒成立”就忘了先找等号成立的条件。</p>
               </div>
               <div class="note-tags"><span>#导数</span><span>#恒成立</span><span>#不等式</span></div>
+              <div class="note-foot"><small>REVIEW STREAK</small><strong>连续 14 天</strong></div>
             </div>
-            <div class="streak"><small>REVIEW STREAK</small><strong>连续 14 天</strong></div>
             <div class="hero-seal">拾</div>
           </div>
         </div>
