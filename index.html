@@ -1,0 +1,1121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f3e9">
+  <meta name="description" content="拾错：把做错的题，变成下一次的底气。错题整理、间隔复习与公开复盘平台。GitHub Pages 静态展示版。">
+  <title>拾错 · 把错题变成方法</title>
+  <style>
+    :root {
+      --paper: #f7f3e9;
+      --cream: #fbf8f0;
+      --white: #fffdf8;
+      --ink: #1d2b23;
+      --ink-soft: #59665d;
+      --ink-mute: #8a938b;
+      --verm: #c94f32;
+      --verm-dark: #a93d24;
+      --sage: #6f8b74;
+      --gold: #c6a15b;
+      --sky: #6e8fa8;
+      --line: #d9d2c3;
+      --line-soft: rgba(29, 43, 35, .1);
+      --shadow: 0 18px 45px rgba(43, 37, 25, .09);
+      --sans: "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: var(--sans);
+      font-size: 14px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(29, 43, 35, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(29, 43, 35, .035) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(to bottom, #000, rgba(0, 0, 0, .35));
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    ::selection { background: rgba(201, 79, 50, .18); }
+    .container { width: min(1180px, calc(100% - 48px)); margin: 0 auto; }
+    .serif { font-family: var(--serif); }
+    .mono { font-family: var(--mono); }
+
+    /* header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      border-bottom: 1px solid rgba(217, 210, 195, .7);
+      background: rgba(247, 243, 233, .88);
+      backdrop-filter: blur(18px);
+    }
+    .header-inner {
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 10px; }
+    .seal {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: #fff8ee;
+      background: var(--verm);
+      box-shadow: 0 2px 0 rgba(120, 39, 20, .18);
+      font-family: var(--serif);
+      font-size: 23px;
+      line-height: 1;
+      padding-top: 2px;
+    }
+    .wordmark { display: flex; flex-direction: column; line-height: 1.05; }
+    .wordmark strong { font-family: var(--serif); font-size: 17px; letter-spacing: .08em; }
+    .wordmark small { margin-top: 4px; color: var(--ink-mute); font-size: 7px; letter-spacing: .32em; }
+    .nav { display: flex; align-items: center; gap: 26px; color: var(--ink-soft); font-size: 12.5px; }
+    .nav a { transition: color .2s ease; }
+    .nav a:hover { color: var(--ink); }
+    .header-side { display: flex; align-items: center; gap: 12px; }
+    .demo-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border: 1px solid rgba(198, 161, 91, .38);
+      border-radius: 999px;
+      background: rgba(198, 161, 91, .08);
+      color: #7c632f;
+      font-size: 9.5px;
+      letter-spacing: .08em;
+      white-space: nowrap;
+    }
+    .demo-pill i { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+
+    /* buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 0 18px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      font-size: 12.5px;
+      font-weight: 600;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-primary { color: #fffaf2; background: var(--verm); box-shadow: 0 8px 20px rgba(201, 79, 50, .17); }
+    .btn-primary:hover { background: var(--verm-dark); }
+    .btn-outline { color: var(--ink); border-color: var(--line); background: rgba(255, 253, 248, .55); }
+    .btn-outline:hover { border-color: var(--ink-soft); background: var(--white); }
+    .btn-sm { min-height: 36px; padding: 0 13px; font-size: 11.5px; }
+
+    /* hero */
+    .hero { position: relative; overflow: hidden; padding: 76px 0 68px; }
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 440px;
+      height: 440px;
+      right: -130px;
+      top: -180px;
+      border: 1px solid rgba(201, 79, 50, .11);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 170px;
+      height: 170px;
+      right: 84px;
+      top: 96px;
+      border-radius: 50%;
+      background: rgba(201, 79, 50, .055);
+      filter: blur(28px);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.06fr .94fr;
+      align-items: center;
+      gap: 54px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-soft);
+      font-size: 9.5px;
+      font-weight: 600;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--verm); }
+    .hero-title {
+      margin: 20px 0 0;
+      font-family: var(--serif);
+      font-size: clamp(38px, 5.5vw, 62px);
+      font-weight: 700;
+      line-height: 1.13;
+      letter-spacing: -.055em;
+    }
+    .hero-title em {
+      position: relative;
+      display: inline-block;
+      color: var(--verm);
+      font-style: normal;
+      padding: 0 .03em;
+    }
+    .hero-title em::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -.02em;
+      height: .055em;
+      border-radius: 999px;
+      background: rgba(201, 79, 50, .42);
+      transform: rotate(-1.2deg);
+    }
+    .hero-lede {
+      max-width: 520px;
+      margin: 24px 0 0;
+      color: var(--ink-soft);
+      font-size: 13px;
+      line-height: 1.95;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+    .hero-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 24px;
+      margin-top: 28px;
+      color: rgba(89, 102, 93, .82);
+      font-size: 10px;
+    }
+    .hero-facts span { display: inline-flex; align-items: center; gap: 6px; }
+    .hero-facts b { color: var(--sage); font-size: 12px; font-weight: 700; }
+
+    .hero-art { position: relative; min-height: 420px; display: flex; align-items: center; justify-content: center; }
+    .note-card {
+      position: relative;
+      width: min(100%, 430px);
+      padding: 28px 28px 24px;
+      border: 1px solid rgba(217, 210, 195, .9);
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: 0 30px 65px rgba(43, 37, 25, .14), 0 2px 0 rgba(255, 255, 255, .8) inset;
+      transform: rotate(-1.4deg);
+    }
+    .note-card::after {
+      content: "";
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      top: 10px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(29, 43, 35, .1), transparent);
+    }
+    .note-meta { display: flex; align-items: center; justify-content: space-between; color: var(--ink-mute); font-size: 9px; }
+    .note-meta .subject { display: inline-flex; align-items: center; gap: 7px; color: var(--verm); font-weight: 700; letter-spacing: .08em; }
+    .note-meta .subject b { font-size: 15px; font-weight: 500; }
+    .note-title {
+      max-width: 315px;
+      margin: 20px 0 0;
+      font-family: var(--serif);
+      font-size: 23px;
+      line-height: 1.5;
+      letter-spacing: -.02em;
+    }
+    .rule-lines { margin-top: 20px; display: grid; gap: 9px; }
+    .rule-lines i { display: block; height: 7px; border-radius: 1px; background: #ded8ca; }
+    .rule-lines i:nth-child(1) { width: 100%; }
+    .rule-lines i:nth-child(2) { width: 88%; }
+    .rule-lines i:nth-child(3) { width: 62%; background: #ebe6da; }
+    .point {
+      margin-top: 22px;
+      padding: 14px 15px;
+      border-left: 3px solid rgba(201, 79, 50, .55);
+      background: #f7e8e3;
+    }
+    .point strong { display: block; color: var(--verm); font-size: 9px; letter-spacing: .12em; }
+    .point p { margin: 7px 0 0; color: #5f3d36; font-size: 11.5px; line-height: 1.8; }
+    .note-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; }
+    .note-tags span, .chip {
+      display: inline-flex;
+      align-items: center;
+      height: 24px;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(251, 248, 240, .55);
+      color: var(--ink-soft);
+      font-family: var(--mono);
+      font-size: 8.5px;
+    }
+    .stamp {
+      position: absolute;
+      right: 24px;
+      top: 76px;
+      padding: 7px 9px;
+      border: 2px solid rgba(201, 79, 50, .7);
+      color: var(--verm);
+      font-family: var(--serif);
+      font-size: 13px;
+      letter-spacing: .18em;
+      transform: rotate(7deg);
+      opacity: .9;
+    }
+    .streak {
+      position: absolute;
+      left: 2px;
+      bottom: 34px;
+      z-index: 2;
+      min-width: 146px;
+      padding: 12px 15px;
+      border: 1px solid rgba(111, 139, 116, .25);
+      border-radius: 4px;
+      background: #e6eee4;
+      box-shadow: 0 12px 25px rgba(43, 37, 25, .1);
+      transform: rotate(1deg);
+    }
+    .streak small { display: block; color: #5e7562; font-family: var(--mono); font-size: 7.5px; letter-spacing: .12em; }
+    .streak strong { display: block; margin-top: 4px; font-family: var(--serif); font-size: 17px; }
+    .hero-seal {
+      position: absolute;
+      right: 10px;
+      bottom: 8px;
+      width: 84px;
+      height: 84px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: #fff8ee;
+      background: #d85838;
+      box-shadow: 0 14px 28px rgba(169, 61, 36, .24);
+      font-family: var(--serif);
+      font-size: 48px;
+      transform: rotate(4deg);
+    }
+    .hero-seal::before {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(255, 248, 238, .32);
+      border-radius: 5px;
+    }
+
+    /* stats */
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      margin-top: 42px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--line);
+    }
+    .stat-strip div { padding: 19px 20px 17px; background: var(--paper); }
+    .stat-strip strong { display: block; font-family: var(--serif); font-size: 27px; line-height: 1; letter-spacing: -.03em; }
+    .stat-strip span { display: block; margin-top: 7px; color: var(--ink-mute); font-size: 9.5px; letter-spacing: .07em; }
+
+    /* sections */
+    .section { padding: 72px 0; border-top: 1px solid rgba(217, 210, 195, .65); }
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+    .section-head h2 { margin: 9px 0 0; font-family: var(--serif); font-size: clamp(30px, 3.5vw, 44px); line-height: 1.2; letter-spacing: -.04em; }
+    .section-head p { max-width: 470px; margin: 0; color: var(--ink-soft); font-size: 12px; line-height: 1.9; }
+    .tiny-label { color: var(--ink-mute); font-family: var(--mono); font-size: 8px; letter-spacing: .18em; }
+    .link-arrow { display: inline-flex; align-items: center; gap: 6px; color: var(--verm); font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .link-arrow:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+    /* explore */
+    .toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .search-wrap { position: relative; flex: 1 1 260px; max-width: 430px; }
+    .search-wrap svg { position: absolute; left: 13px; top: 50%; width: 15px; height: 15px; transform: translateY(-50%); color: var(--ink-mute); }
+    .search {
+      width: 100%;
+      height: 42px;
+      padding: 0 14px 0 37px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      outline: none;
+      color: var(--ink);
+      background: rgba(251, 248, 240, .7);
+      font-size: 12px;
+      transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+    .search:focus { border-color: rgba(201, 79, 50, .5); background: var(--white); box-shadow: 0 0 0 3px rgba(201, 79, 50, .07); }
+    .search::placeholder { color: #9da49b; }
+    .sort {
+      height: 42px;
+      padding: 0 30px 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      outline: none;
+      color: var(--ink-soft);
+      background: rgba(251, 248, 240, .7);
+      font-size: 11px;
+    }
+    .subjects { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 22px; }
+    .subject-chip {
+      height: 29px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink-soft);
+      background: transparent;
+      font-size: 10px;
+      transition: all .18s ease;
+    }
+    .subject-chip:hover { border-color: rgba(29, 43, 35, .28); color: var(--ink); }
+    .subject-chip.active { border-color: var(--ink); color: #f9f5eb; background: var(--ink); }
+    .result-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .result-row span { color: var(--ink-mute); font-size: 10px; }
+    .result-row b { color: var(--ink); font-family: var(--serif); font-size: 17px; font-weight: 600; }
+    .mistake-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .mistake-card {
+      position: relative;
+      min-height: 224px;
+      padding: 18px 18px 15px;
+      border: 1px solid rgba(217, 210, 195, .9);
+      border-radius: 7px;
+      background: rgba(255, 253, 248, .72);
+      text-align: left;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .mistake-card:hover { transform: translateY(-3px); border-color: rgba(201, 79, 50, .28); background: var(--white); box-shadow: var(--shadow); }
+    .mistake-card:focus-visible { outline: 2px solid var(--verm); outline-offset: 3px; }
+    .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .card-subject { display: inline-flex; align-items: center; gap: 6px; color: var(--verm); font-size: 9.5px; font-weight: 700; letter-spacing: .06em; }
+    .card-subject i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .difficulty { color: var(--ink-mute); font-family: var(--mono); font-size: 8px; }
+    .mistake-card h3 { margin: 16px 0 0; font-family: var(--serif); font-size: 17px; line-height: 1.55; letter-spacing: -.02em; }
+    .mistake-card p { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin: 9px 0 0; color: var(--ink-soft); font-size: 10.5px; line-height: 1.8; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 14px; }
+    .card-tags span { padding: 3px 7px; border-radius: 999px; background: rgba(29, 43, 35, .045); color: var(--ink-mute); font-family: var(--mono); font-size: 7.5px; }
+    .card-foot { position: absolute; left: 18px; right: 18px; bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--ink-mute); font-size: 9px; }
+    .card-author { display: inline-flex; align-items: center; gap: 6px; }
+    .avatar-dot { width: 18px; height: 18px; display: grid; place-items: center; border-radius: 50%; color: #fff8ee; background: var(--sage); font-size: 7px; font-weight: 700; }
+    .empty { display: none; padding: 48px 20px; border: 1px dashed var(--line); border-radius: 8px; text-align: center; color: var(--ink-mute); font-size: 12px; }
+    .empty.show { display: block; }
+
+    /* database */
+    .db-intro { display: grid; grid-template-columns: 1fr .9fr; gap: 40px; align-items: start; }
+    .db-intro h2 { margin: 9px 0 0; font-family: var(--serif); font-size: clamp(34px, 4.4vw, 56px); line-height: 1.14; letter-spacing: -.05em; }
+    .db-intro p { max-width: 470px; margin: 18px 0 0; color: var(--ink-soft); font-size: 12px; line-height: 2; }
+    .db-numbers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .db-number { padding: 18px 19px; border: 1px solid var(--line); border-radius: 7px; background: rgba(255, 253, 248, .62); }
+    .db-number strong { display: block; font-family: var(--serif); font-size: 32px; line-height: 1; letter-spacing: -.04em; }
+    .db-number span { display: block; margin-top: 7px; color: var(--ink-mute); font-size: 9px; }
+    .clusters { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-top: 38px; }
+    .cluster { padding-top: 13px; border-top: 2px solid var(--ink); }
+    .cluster:nth-child(2) { border-color: var(--verm); }
+    .cluster:nth-child(3) { border-color: var(--gold); }
+    .cluster:nth-child(4) { border-color: var(--sage); }
+    .cluster:nth-child(5) { border-color: var(--sky); }
+    .cluster-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    .cluster-head strong { font-family: var(--serif); font-size: 15px; }
+    .cluster-head span { color: var(--ink-mute); font-family: var(--mono); font-size: 7px; letter-spacing: .1em; }
+    .cluster ul { list-style: none; margin: 13px 0 0; padding: 0; }
+    .cluster li { padding: 5px 0; color: var(--ink-soft); font-family: var(--mono); font-size: 8.5px; }
+    .table-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 30px; }
+    .table-card { padding: 18px 18px 16px; border: 1px solid var(--line); border-top: 2px solid var(--ink); border-radius: 6px; background: rgba(255, 253, 248, .67); }
+    .table-card:nth-child(2) { border-top-color: var(--verm); }
+    .table-card:nth-child(3) { border-top-color: var(--gold); }
+    .table-card h3 { margin: 0; font-family: var(--mono); font-size: 16px; letter-spacing: -.03em; }
+    .table-card > p { margin: 4px 0 14px; color: var(--ink-mute); font-size: 9px; }
+    .table-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px dashed rgba(217, 210, 195, .7); font-family: var(--mono); font-size: 8px; }
+    .table-row:last-child { border-bottom: 0; }
+    .table-row span:first-child { color: var(--ink-soft); }
+    .table-row span:last-child { color: var(--ink-mute); text-align: right; }
+    .table-row .key { color: var(--verm); font-weight: 700; }
+    .table-note { margin: 12px 0 0; color: var(--ink-soft); font-size: 9.5px; line-height: 1.8; }
+    .principles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 30px; }
+    .principle { min-height: 170px; padding: 18px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255, 253, 248, .55); }
+    .principle .num { color: var(--verm); font-family: var(--mono); font-size: 8px; }
+    .principle h3 { margin: 18px 0 8px; font-family: var(--serif); font-size: 16px; }
+    .principle p { margin: 0; color: var(--ink-soft); font-size: 9.5px; line-height: 1.85; }
+    .constraints { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 28px; }
+    .constraint { display: grid; grid-template-columns: 32px 1fr; gap: 11px; padding: 15px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255, 253, 248, .58); }
+    .constraint b { color: var(--verm); font-family: var(--mono); font-size: 9px; }
+    .constraint h4 { margin: 0; font-size: 11.5px; }
+    .constraint p { margin: 4px 0 0; color: var(--ink-soft); font-size: 9px; line-height: 1.75; }
+
+    /* stack */
+    .stack-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; }
+    .stack-card { display: grid; grid-template-columns: 34px 1fr; gap: 12px; padding: 17px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255, 253, 248, .62); }
+    .stack-icon { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; color: #4f6a56; background: #e3ebe0; font-family: var(--serif); font-size: 15px; }
+    .stack-card h3 { margin: 0; font-size: 12px; }
+    .stack-card small { display: block; margin-top: 3px; color: var(--verm); font-family: var(--mono); font-size: 7.5px; }
+    .stack-card p { margin: 9px 0 0; color: var(--ink-soft); font-size: 9.5px; line-height: 1.8; }
+
+    /* verify */
+    .verify-grid { display: grid; grid-template-columns: .92fr 1.08fr; gap: 38px; align-items: start; }
+    .verify-numbers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 24px; }
+    .verify-number { padding: 17px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255, 253, 248, .58); }
+    .verify-number strong { display: block; font-family: var(--serif); font-size: 34px; line-height: 1; letter-spacing: -.05em; }
+    .verify-number:nth-child(1) strong { color: var(--verm); }
+    .verify-number:nth-child(2) strong { color: var(--sage); }
+    .verify-number:nth-child(3) strong { color: var(--gold); }
+    .verify-number span { display: block; margin-top: 7px; color: var(--ink-mute); font-size: 9px; }
+    .verify-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .verify-panel { padding: 17px; border: 1px solid var(--line); border-radius: 6px; background: rgba(255, 253, 248, .58); }
+    .verify-panel h3 { margin: 0 0 12px; font-size: 11px; }
+    .verify-panel h3.coral { color: var(--verm); }
+    .verify-panel ul { list-style: none; margin: 0; padding: 0; }
+    .verify-panel li { position: relative; padding: 5px 0 5px 15px; color: var(--ink-soft); font-size: 9px; line-height: 1.7; }
+    .verify-panel li::before { content: "·"; position: absolute; left: 2px; color: var(--sage); font-size: 17px; line-height: 1; top: 4px; }
+    .verify-panel.negative { background: #f7e8e3; border-color: rgba(201, 79, 50, .16); }
+    .verify-panel.negative li::before { content: "×"; color: var(--verm); font-size: 11px; top: 6px; }
+    .caveat { margin-top: 20px; color: var(--ink-mute); font-size: 9px; line-height: 1.8; }
+
+    /* footer */
+    .site-footer { padding: 46px 0 34px; border-top: 1px solid var(--line); }
+    .footer-inner { display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; }
+    .footer-brand p { max-width: 330px; margin: 12px 0 0; color: var(--ink-soft); font-size: 10px; line-height: 1.9; }
+    .footer-meta { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px 18px; color: var(--ink-mute); font-family: var(--mono); font-size: 8px; }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 30px; padding-top: 18px; border-top: 1px solid rgba(217, 210, 195, .7); color: var(--ink-mute); font-size: 8.5px; }
+
+    /* dialog */
+    .detail-dialog {
+      width: min(720px, calc(100% - 32px));
+      max-height: min(84vh, 780px);
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--white);
+      color: var(--ink);
+      box-shadow: 0 35px 90px rgba(20, 25, 20, .25);
+    }
+    .detail-dialog::backdrop { background: rgba(22, 31, 25, .44); backdrop-filter: blur(3px); }
+    .dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 17px 22px; border-bottom: 1px solid var(--line); }
+    .dialog-head span { color: var(--verm); font-family: var(--mono); font-size: 8px; letter-spacing: .16em; }
+    .dialog-close { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 50%; color: var(--ink-soft); background: transparent; font-size: 17px; line-height: 1; }
+    .dialog-close:hover { background: var(--paper); color: var(--ink); }
+    .dialog-body { overflow: auto; max-height: calc(84vh - 62px); padding: 25px 27px 28px; }
+    .dialog-body h3 { margin: 0; font-family: var(--serif); font-size: 25px; line-height: 1.45; letter-spacing: -.03em; }
+    .dialog-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+    .dialog-meta span { padding: 3px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-mute); font-family: var(--mono); font-size: 7.5px; }
+    .dialog-block { margin-top: 21px; padding-top: 17px; border-top: 1px solid rgba(217, 210, 195, .7); }
+    .dialog-block h4 { margin: 0 0 7px; color: var(--ink-mute); font-family: var(--mono); font-size: 8px; letter-spacing: .12em; }
+    .dialog-block p { margin: 0; color: var(--ink-soft); font-size: 11.5px; line-height: 1.95; }
+    .dialog-point { padding: 13px 15px; border-left: 3px solid rgba(201, 79, 50, .55); background: #f7e8e3; }
+    .dialog-point p { color: #603d35; }
+    .reveal { margin-top: 15px; }
+    .answer[hidden] { display: none; }
+    .dialog-note { margin-top: 18px; color: var(--ink-mute); font-size: 8.5px; line-height: 1.75; }
+
+    @media (max-width: 980px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 26px; }
+      .hero-art { min-height: 390px; margin-top: 10px; }
+      .note-card { width: min(100%, 440px); }
+      .stat-strip { margin-top: 28px; }
+      .clusters { grid-template-columns: repeat(3, 1fr); row-gap: 26px; }
+      .principles { grid-template-columns: repeat(2, 1fr); }
+      .mistake-grid { grid-template-columns: repeat(2, 1fr); }
+      .table-cards { grid-template-columns: 1fr; }
+      .db-intro { grid-template-columns: 1fr; gap: 25px; }
+      .verify-grid { grid-template-columns: 1fr; gap: 26px; }
+      .stack-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 700px) {
+      .container { width: min(100% - 30px, 1180px); }
+      .nav { display: none; }
+      .header-inner { height: 60px; }
+      .demo-pill { font-size: 8px; padding: 6px 8px; }
+      .hero { padding: 48px 0 42px; }
+      .hero-title { font-size: clamp(40px, 12vw, 56px); }
+      .hero-lede { font-size: 12px; }
+      .hero-art { min-height: 375px; }
+      .note-card { padding: 22px 20px; }
+      .note-title { font-size: 20px; }
+      .stamp { right: 18px; top: 70px; font-size: 11px; }
+      .hero-seal { width: 68px; height: 68px; font-size: 39px; right: 0; bottom: 0; }
+      .streak { left: 0; bottom: 22px; min-width: 130px; padding: 10px 12px; }
+      .stat-strip { grid-template-columns: repeat(2, 1fr); }
+      .section { padding: 52px 0; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 12px; }
+      .mistake-grid { grid-template-columns: 1fr; }
+      .mistake-card { min-height: 205px; }
+      .clusters { grid-template-columns: repeat(2, 1fr); gap: 20px 16px; }
+      .principles { grid-template-columns: 1fr; }
+      .constraints { grid-template-columns: 1fr; }
+      .stack-grid { grid-template-columns: 1fr; }
+      .verify-panels { grid-template-columns: 1fr; }
+      .verify-numbers { grid-template-columns: repeat(3, 1fr); }
+      .verify-number { padding: 12px; }
+      .verify-number strong { font-size: 27px; }
+      .footer-inner { display: block; }
+      .footer-meta { justify-content: flex-start; margin-top: 20px; }
+      .footer-bottom { display: block; line-height: 2; }
+      .toolbar { align-items: stretch; }
+      .search-wrap { max-width: none; }
+      .sort { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="拾错首页">
+        <span class="seal" aria-hidden="true">拾</span>
+        <span class="wordmark"><strong>拾错</strong><small>SHICUO</small></span>
+      </a>
+      <nav class="nav" aria-label="主导航">
+        <a href="#explore">发现错题</a>
+        <a href="#database">数据库设计</a>
+        <a href="#stack">技术栈</a>
+        <a href="#verify">项目验证</a>
+      </nav>
+      <div class="header-side">
+        <span class="demo-pill"><i></i>静态展示版</span>
+        <a class="btn btn-outline btn-sm" href="#explore">开始浏览</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">A shared archive of mistakes</div>
+            <h1 class="hero-title">把做错的题，<br>变成下一次的<em>底气</em>。</h1>
+            <p class="hero-lede">拾错是一个错题整理、间隔复习与公开复盘平台。把散落在试卷边缘的失误收进来，写清楚卡点，再在遗忘之前与它重逢。你也可以把整理好的方法分享出去。</p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#explore">去发现错题 <span aria-hidden="true">→</span></a>
+              <a class="btn btn-outline" href="#database">看看数据库怎么设计</a>
+            </div>
+            <div class="hero-facts">
+              <span><b>✓</b> 默认私有，逐题选择公开</span>
+              <span><b>✓</b> 内置 SM-2 复习排期</span>
+              <span><b>✓</b> 支持克隆与来源追溯</span>
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="note-card">
+              <div class="stamp">已复盘</div>
+              <div class="note-meta">
+                <span class="subject"><b>∑</b> 数学 · 导数</span>
+                <span>NO. 014</span>
+              </div>
+              <h3 class="note-title">含参不等式恒成立，为什么要先找等号？</h3>
+              <div class="rule-lines"><i></i><i></i><i></i></div>
+              <div class="point">
+                <strong>我的卡点</strong>
+                <p>不是不会求导，而是看见“恒成立”就忘了先找等号成立的条件。</p>
+              </div>
+              <div class="note-tags"><span>#导数</span><span>#恒成立</span><span>#不等式</span></div>
+            </div>
+            <div class="streak"><small>REVIEW STREAK</small><strong>连续 14 天</strong></div>
+            <div class="hero-seal">拾</div>
+          </div>
+        </div>
+
+        <div class="stat-strip" aria-label="平台数据">
+          <div><strong>8</strong><span>公开复盘</span></div>
+          <div><strong>8</strong><span>学科覆盖</span></div>
+          <div><strong>15</strong><span>业务数据表</span></div>
+          <div><strong>30+</strong><span>RLS 权限策略</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="explore">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="tiny-label">PUBLIC LIBRARY · 公开错题</div>
+            <h2>读一份别人的复盘，<br>比再做十道新题更有用。</h2>
+          </div>
+          <p>按学科、关键词和难度找到你此刻需要的那一道。静态展示版把搜索、筛选和详情阅读留在浏览器里。</p>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>
+            <input id="search" class="search" type="search" placeholder="搜索题目、学科、错因或关键词…" autocomplete="off" aria-label="搜索错题">
+          </div>
+          <select id="sort" class="sort" aria-label="排序方式">
+            <option value="latest">最新发布</option>
+            <option value="popular">最多收藏</option>
+            <option value="challenge">最具挑战</option>
+          </select>
+        </div>
+
+        <div class="subjects" id="subjects" aria-label="按学科筛选">
+          <button class="subject-chip active" data-subject="全部">全部</button>
+          <button class="subject-chip" data-subject="数学">数学</button>
+          <button class="subject-chip" data-subject="物理">物理</button>
+          <button class="subject-chip" data-subject="化学">化学</button>
+          <button class="subject-chip" data-subject="英语">英语</button>
+          <button class="subject-chip" data-subject="语文">语文</button>
+          <button class="subject-chip" data-subject="生物">生物</button>
+          <button class="subject-chip" data-subject="历史">历史</button>
+          <button class="subject-chip" data-subject="地理">地理</button>
+        </div>
+
+        <div class="result-row"><span>当前筛选下 <b id="count">8</b> 份公开复盘</span><span>点击卡片查看复盘详情</span></div>
+        <div class="mistake-grid" id="grid" aria-live="polite"></div>
+        <div class="empty" id="empty">没有找到匹配的错题。换一个关键词，或者切回“全部”看看。</div>
+      </div>
+    </section>
+
+    <section class="section" id="database">
+      <div class="container">
+        <div class="db-intro">
+          <div>
+            <div class="tiny-label">DATABASE DESIGN · SUPABASE / POSTGRESQL</div>
+            <h2>先画关系，<br>再写页面。</h2>
+            <p>拾错不是“先做界面，再补一个数据库”。每一张表都对应一个真实页面动作：谁可以看、谁能改、删除时留下什么、列表页要不要实时 count。这份说明把表结构、主外键、RLS 与前端路由放在同一张图上。</p>
+          </div>
+          <div class="db-numbers" aria-label="数据库规模">
+            <div class="db-number"><strong>15</strong><span>张业务表</span></div>
+            <div class="db-number"><strong>8</strong><span>个枚举类型</span></div>
+            <div class="db-number"><strong>30+</strong><span>条 RLS 策略</span></div>
+            <div class="db-number"><strong>2</strong><span>个核心 RPC</span></div>
+          </div>
+        </div>
+
+        <div class="clusters" aria-label="五组数据关系">
+          <div class="cluster">
+            <div class="cluster-head"><strong>身份</strong><span>IDENTITY</span></div>
+            <ul><li>auth.users</li><li>profiles</li><li>notebooks</li></ul>
+          </div>
+          <div class="cluster">
+            <div class="cluster-head"><strong>内容</strong><span>CONTENT</span></div>
+            <ul><li>subjects</li><li>tags</li><li>mistakes</li><li>mistake_tags</li></ul>
+          </div>
+          <div class="cluster">
+            <div class="cluster-head"><strong>互动</strong><span>ENGAGE</span></div>
+            <ul><li>comments</li><li>favorites</li><li>likes</li><li>notebook_items</li></ul>
+          </div>
+          <div class="cluster">
+            <div class="cluster-head"><strong>学习</strong><span>LEARNING</span></div>
+            <ul><li>review_schedules</li><li>review_logs</li></ul>
+          </div>
+          <div class="cluster">
+            <div class="cluster-head"><strong>治理</strong><span>GOVERN</span></div>
+            <ul><li>reports</li><li>notifications</li><li>admin_audit_logs</li></ul>
+          </div>
+        </div>
+
+        <div class="table-cards">
+          <article class="table-card">
+            <h3>profiles</h3>
+            <p>认证用户的公开资料 · 1:1</p>
+            <div class="table-row"><span><b class="key">PK</b> id</span><span>uuid → auth.users</span></div>
+            <div class="table-row"><span><b class="key">UQ</b> username</span><span>citext</span></div>
+            <div class="table-row"><span>role</span><span>user_role</span></div>
+            <div class="table-row"><span>status</span><span>user_status</span></div>
+            <div class="table-row"><span>notification_prefs</span><span>jsonb</span></div>
+            <p class="table-note">认证归 auth，资料归 profiles。公开资料不暴露邮箱与密码哈希。</p>
+          </article>
+          <article class="table-card">
+            <h3>mistakes</h3>
+            <p>错题内容与社交计数</p>
+            <div class="table-row"><span><b class="key">PK</b> id</span><span>uuid</span></div>
+            <div class="table-row"><span><b class="key">FK</b> owner_id</span><span>→ profiles</span></div>
+            <div class="table-row"><span><b class="key">FK</b> subject_id</span><span>→ subjects</span></div>
+            <div class="table-row"><span><b class="key">FK</b> original_mistake_id</span><span>→ mistakes</span></div>
+            <div class="table-row"><span>favorite / like / comment</span><span>int</span></div>
+            <p class="table-note">自引用保留克隆血缘；状态与可见性分开，草稿不会误公开。</p>
+          </article>
+          <article class="table-card">
+            <h3>notebooks</h3>
+            <p>把题组织成专题</p>
+            <div class="table-row"><span><b class="key">PK</b> id</span><span>uuid</span></div>
+            <div class="table-row"><span><b class="key">FK</b> owner_id</span><span>→ profiles</span></div>
+            <div class="table-row"><span><b class="key">UQ</b> owner_id</span><span>where is_default</span></div>
+            <div class="table-row"><span>is_default</span><span>bool</span></div>
+            <div class="table-row"><span>notebook_items</span><span>(notebook_id, mistake_id)</span></div>
+            <p class="table-note">复合主键天然去重；每用户最多一个默认本。</p>
+          </article>
+        </div>
+
+        <div class="principles">
+          <article class="principle"><span class="num">01</span><h3>身份与资料分离</h3><p>auth.users 只负责认证，profiles 负责业务资料。公开主页可以读昵称和学校，却永远碰不到密码哈希与邮箱。</p></article>
+          <article class="principle"><span class="num">02</span><h3>关系交给外键</h3><p>复合主键去重，复合外键防跨题回复，num_nonnulls 约束举报目标。应用层可以犯错，数据库层不让坏数据落地。</p></article>
+          <article class="principle"><span class="num">03</span><h3>读多写少，计数反规范化</h3><p>信息流不实时 count()。收藏、点赞、评论、克隆用触发器维护计数，列表页只读一个整数。</p></article>
+          <article class="principle"><span class="num">04</span><h3>状态与事件分开</h3><p>review_schedules 存“现在”，review_logs 存“发生过”。当前排期可覆盖，学习历史不可丢。</p></article>
+        </div>
+
+        <div class="constraints">
+          <div class="constraint"><b>01</b><div><h4>评论不能跨题</h4><p>复合外键 (parent_id, mistake_id) 指向 comments(id, mistake_id)，回复只能挂在同一道题下。</p></div></div>
+          <div class="constraint"><b>02</b><div><h4>举报只打一个目标</h4><p>num_nonnulls(mistake_id, comment_id, target_user_id) = 1，三个可空外键恰好一个非空。</p></div></div>
+          <div class="constraint"><b>03</b><div><h4>计数不能伪造</h4><p>before insert or update 触发器重置计数并锁定 published_at，客户端不能改 owner 或发布时间。</p></div></div>
+          <div class="constraint"><b>04</b><div><h4>复习状态可覆盖</h4><p>状态表存当前到期日，日志表存每次评分；评分在 review_mistake() RPC 里原子完成。</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="stack">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <div class="tiny-label">PLATFORM · 不只把 Supabase 当数据库</div>
+            <h2>从登录、头像、评论通知，<br>到每日复习提醒。</h2>
+          </div>
+          <p>同一套项目里，把认证、内容、文件、通知与复习提醒都放在 Supabase 的能力边界内。</p>
+        </div>
+        <div class="stack-grid">
+          <article class="stack-card"><div class="stack-icon">A</div><div><h3>Auth</h3><small>@supabase/ssr</small><p>Cookie 会话 + middleware 刷新；注册触发器创建 profile 与默认错题本。</p></div></article>
+          <article class="stack-card"><div class="stack-icon">P</div><div><h3>Postgres</h3><small>RLS + Trigger</small><p>权限、约束、计数器、审计都放在数据库层，前端不是最后一道防线。</p></div></article>
+          <article class="stack-card"><div class="stack-icon">S</div><div><h3>Storage</h3><small>2 buckets</small><p>avatars / question-images；公共读，写入限制在用户目录。</p></div></article>
+          <article class="stack-card"><div class="stack-icon">R</div><div><h3>Realtime</h3><small>publication</small><p>comments / notifications 已加入发布；前端订阅可继续扩展。</p></div></article>
+          <article class="stack-card"><div class="stack-icon">λ</div><div><h3>Edge Functions</h3><small>review-reminder</small><p>定时扫描到期复习，写通知，支持分页与去重。</p></div></article>
+          <article class="stack-card"><div class="stack-icon">ƒ</div><div><h3>View / RPC</h3><small>3 个入口</small><p>mistake_feed / get_public_stats / review_mistake，读模型与写操作各有边界。</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="verify">
+      <div class="container">
+        <div class="verify-grid">
+          <div>
+            <div class="tiny-label">VERIFY · 不是画完架构图就结束</div>
+            <h2>构建、数据库、权限，<br>三条线都跑过一遍。</h2>
+            <div class="verify-numbers">
+              <div class="verify-number"><strong>21</strong><span>条路由构建通过</span></div>
+              <div class="verify-number"><strong>0</strong><span>TypeScript 错误</span></div>
+              <div class="verify-number"><strong>18.4</strong><span>PostgreSQL 实跑</span></div>
+            </div>
+            <p class="caveat">边界：静态展示版只保留公开阅读体验；完整登录、写入、管理后台和 Supabase 会话需在 Next.js 服务端运行。演示数据来自项目内置样例。</p>
+          </div>
+          <div class="verify-panels">
+            <div class="verify-panel">
+              <h3>已实际验证</h3>
+              <ul>
+                <li>注册 → 自动建 profile + 默认错题本</li>
+                <li>题主看到 2 题，其他用户只看到 1 题</li>
+                <li>收藏 / 评论计数、克隆回退到 0</li>
+                <li>评论与收藏通知、管理员隐藏评论</li>
+              </ul>
+            </div>
+            <div class="verify-panel negative">
+              <h3 class="coral">负向测试</h3>
+              <ul>
+                <li>改角色 / 改计数 / 改发布时间</li>
+                <li>克隆私有题 / 给私有题建复习</li>
+                <li>跨题回复 / rating = null</li>
+                <li>公开本混入私有题</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a class="brand" href="#top">
+            <span class="seal" aria-hidden="true">拾</span>
+            <span class="wordmark"><strong>拾错</strong><small>SHICUO</small></span>
+          </a>
+          <p>整理、复习、共享，让错题真正成为你的学习资产。这是项目的 GitHub Pages 静态展示版。</p>
+        </div>
+        <div class="footer-meta">
+          <span>Next.js 15 · React 19 · TypeScript</span>
+          <span>Supabase · PostgreSQL</span>
+          <span>GitHub Pages · Static</span>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year">2025</span> 拾错 ShiCuo · 把每一次失误，整理成下一次的底气。</span>
+        <span>静态展示版 · 数据为 Demo 样例</span>
+      </div>
+    </div>
+  </footer>
+
+  <dialog id="detail" class="detail-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-head">
+      <span>REVIEW DETAIL · 错题复盘</span>
+      <button class="dialog-close" id="close" type="button" aria-label="关闭详情">×</button>
+    </div>
+    <div class="dialog-body">
+      <h3 id="dialog-title"></h3>
+      <div class="dialog-meta" id="dialog-meta"></div>
+      <div class="dialog-block">
+        <h4>题目</h4>
+        <p id="dialog-question"></p>
+      </div>
+      <div class="dialog-block dialog-point">
+        <h4>我的卡点</h4>
+        <p id="dialog-point"></p>
+      </div>
+      <div class="dialog-block">
+        <h4>复盘与答案</h4>
+        <div class="answer" id="answer" hidden><p id="dialog-answer"></p></div>
+        <button class="btn btn-outline btn-sm reveal" id="reveal" type="button">显示参考答案</button>
+      </div>
+      <p class="dialog-note">这是只读演示：完整版本支持收藏、点赞、评论、克隆与间隔复习。接入 Supabase 后，这些动作会写回数据库。</p>
+    </div>
+  </dialog>
+
+  <script>
+    const mistakes = [
+      {
+        id: 1,
+        subject: "数学",
+        title: "含参不等式恒成立，为什么要先找等号？",
+        summary: "把“恒成立”直接当成最值问题，漏掉了等号成立的条件。",
+        question: "已知函数 f(x)=x²-2ax+3，若对任意 x∈[1,2]，都有 f(x)≥0 恒成立，求实数 a 的取值范围。",
+        point: "不是不会求导，而是看见“恒成立”就忘了先找等号成立的条件。先判断端点与对称轴的位置，再决定用最值还是分离参数。",
+        answer: "f(x) 在 [1,2] 上的最小值需要分对称轴 x=a 的位置讨论。a≤1 时最小值为 f(1)=4-2a，要求 a≤2；1<a<2 时最小值为 3-a²，要求 -√3≤a≤√3；a≥2 时最小值为 f(2)=7-4a，要求 a≤7/4，与 a≥2 矛盾。合并得 a≤√3。",
+        tags: ["导数", "恒成立", "不等式"],
+        author: "林小满",
+        school: "杭州第二中学",
+        favorites: 42,
+        difficulty: 4,
+        date: "2025-03-18"
+      },
+      {
+        id: 2,
+        subject: "物理",
+        title: "导体棒切割磁感线，电流方向总判断反？",
+        summary: "右手定则和楞次定律混用，忽略了“阻碍变化”的对象。",
+        question: "水平导轨间距 L，磁感应强度 B 竖直向下，导体棒以速度 v 向右运动，回路总电阻 R。求感应电流的大小与方向。",
+        point: "我总在“右手定则”和“楞次定律”之间来回切换，结果把电流方向判断反。其实先判感应电流的磁场方向，再用右手螺旋定则更稳。",
+        answer: "感应电动势 E=BLv，电流 I=BLv/R。导体棒向右运动使回路面积增大、向下磁通量增加，感应电流的磁场应向上，由右手螺旋定则得电流为逆时针方向。",
+        tags: ["电磁感应", "右手定则", "楞次定律"],
+        author: "周予安",
+        school: "宁波效实中学",
+        favorites: 36,
+        difficulty: 4,
+        date: "2025-03-16"
+      },
+      {
+        id: 3,
+        subject: "化学",
+        title: "等效平衡，为什么不能直接按比例换算？",
+        summary: "把“等效”当成“相同”，忽略了恒温恒容与恒温恒压的区别。",
+        question: "在恒温恒容容器中，加入 2 mol SO₂ 和 1 mol O₂，达到平衡。若改为加入 4 mol SO₂ 和 2 mol O₂，平衡如何移动？",
+        point: "等效平衡的前提是“投料相当”，但恒容条件下压强的改变会影响平衡。不能只按比例把投料翻倍，就认为各组分百分含量不变。",
+        answer: "投料翻倍相当于在原有平衡基础上增大压强。该反应正向气体分子数减小，增大压强使平衡正向移动，SO₂ 的转化率提高，但各组分百分含量不一定与原平衡相同。",
+        tags: ["化学平衡", "等效平衡", "压强"],
+        author: "陈知远",
+        school: "温州中学",
+        favorites: 28,
+        difficulty: 3,
+        date: "2025-03-14"
+      },
+      {
+        id: 4,
+        subject: "英语",
+        title: "读后续写动作链，怎样写得不像流水账？",
+        summary: "动作一个接一个，却没有情绪和场景，读起来像清单。",
+        question: "阅读一篇关于“在雨中救助流浪狗”的短文，续写第二段，要求使用至少三个动作描写，体现人物心理变化。",
+        point: "我习惯把“跑过去、抱起狗、回家”写成三个独立句，缺少感官细节和情绪递进。动作链应该有“触发—反应—决定”的节奏。",
+        answer: "示例：I dashed toward the shivering dog, my shoes splashing through the puddles. As I knelt down, it raised its wet head and looked at me with trusting eyes. Without a second thought, I wrapped it in my jacket and hurried home, my heart pounding with a mixture of pity and determination.",
+        tags: ["读后续写", "动作链", "情绪递进"],
+        author: "许南枝",
+        school: "苏州中学",
+        favorites: 51,
+        difficulty: 3,
+        date: "2025-03-12"
+      },
+      {
+        id: 5,
+        subject: "语文",
+        title: "文言虚词“以”，为什么总翻译错？",
+        summary: "只背“用、拿、因为”，没有先判断词性和语境。",
+        question: "解释下列句中“以”的意义和用法：①以刀劈狼首；②不以物喜，不以己悲；③皆以美于徐公。",
+        point: "我把“以”当成一个固定的翻译，看到就写“用”。其实要先看它后面接名词、形容词还是主谓短语，再判断是介词、连词还是动词。",
+        answer: "①介词，用、拿；②介词，因为；③动词，认为。判断顺序：先看词性，再看搭配，最后结合句意。",
+        tags: ["文言虚词", "以", "语境"],
+        author: "沈砚秋",
+        school: "南京师范大学附属中学",
+        favorites: 19,
+        difficulty: 2,
+        date: "2025-03-10"
+      },
+      {
+        id: 6,
+        subject: "生物",
+        title: "自由组合定律，9:3:3:1 什么时候不成立？",
+        summary: "看到两对基因就套 9:3:3:1，忽略了连锁与致死。",
+        question: "两对等位基因控制两对相对性状，F₂ 出现 9:3:3:1 的性状分离比。说明这两对基因满足什么条件？",
+        point: "我把 9:3:3:1 当成“双杂合自交”的固定结果。实际上它要求两对基因独立分配、受精随机、存活率相同，且表现型与基因型对应完整。",
+        answer: "需要满足：两对基因位于非同源染色体上（或距离足够远、发生自由组合）；减数分裂正常；雌雄配子随机结合；各基因型个体存活率相同；表现型完全显性且无其他基因互作。",
+        tags: ["自由组合", "连锁", "致死"],
+        author: "顾青禾",
+        school: "合肥一中",
+        favorites: 24,
+        difficulty: 4,
+        date: "2025-03-08"
+      },
+      {
+        id: 7,
+        subject: "历史",
+        title: "材料题“概括特点”，为什么总抄原文？",
+        summary: "没有把材料语言转成历史概念，答题停在摘抄层面。",
+        question: "根据材料，概括近代中国通商口岸分布的特点，并结合所学分析其成因。",
+        point: "我总怕漏点，就把材料原句抄上去。但“概括”要求提炼，不是复述。应该先分层，再把“沿江沿海”转成“集中于东南沿海与长江流域”这样的空间概念。",
+        answer: "特点：集中于东南沿海与长江下游，沿主要航线与交通干线分布，由条约开放逐步向内陆延伸。成因：列强侵华以沿海为跳板，便于商品倾销与原料掠夺；清政府战败后被迫开放；近代交通与航运条件影响。",
+        tags: ["材料题", "概括", "通商口岸"],
+        author: "陆行之",
+        school: "福州一中",
+        favorites: 17,
+        difficulty: 3,
+        date: "2025-03-06"
+      },
+      {
+        id: 8,
+        subject: "地理",
+        title: "洋流对渔场的影响，为什么答不全？",
+        summary: "只写“寒暖流交汇”，漏掉上升补偿流与大陆架。",
+        question: "分析秘鲁渔场形成的有利条件。",
+        point: "我一看到渔场就写寒暖流交汇，但秘鲁渔场主要是上升补偿流。答题要分清渔场类型，再从营养盐、光照、大陆架、洋流性质几个角度展开。",
+        answer: "秘鲁沿岸有强盛的上升补偿流，把深层营养盐带到表层，浮游生物繁盛；沿岸有宽广的大陆架，光照充足；位于热带海区，水温适宜；寒流流经，鱼群聚集。",
+        tags: ["洋流", "渔场", "上升流"],
+        author: "白露",
+        school: "厦门一中",
+        favorites: 33,
+        difficulty: 4,
+        date: "2025-03-04"
+      }
+    ];
+
+    const state = { query: "", subject: "全部", sort: "latest" };
+    const grid = document.getElementById("grid");
+    const count = document.getElementById("count");
+    const empty = document.getElementById("empty");
+    const subjectBox = document.getElementById("subjects");
+    const search = document.getElementById("search");
+    const sort = document.getElementById("sort");
+    const detail = document.getElementById("detail");
+    const answer = document.getElementById("answer");
+    const reveal = document.getElementById("reveal");
+
+    function card(m, i) {
+      return `
+        <article class="mistake-card" data-id="${m.id}" tabindex="0" role="button" aria-label="查看 ${m.subject} 错题：${m.title}">
+          <div class="card-top">
+            <span class="card-subject"><i></i>${m.subject}</span>
+            <span class="difficulty">难度 ${m.difficulty}/5</span>
+          </div>
+          <h3>${m.title}</h3>
+          <p>${m.summary}</p>
+          <div class="card-tags">${m.tags.map(t => `<span>#${t}</span>`).join("")}</div>
+          <div class="card-foot">
+            <span class="card-author"><i class="avatar-dot">${m.author.slice(0, 1)}</i>${m.author} · ${m.school}</span>
+            <span>♡ ${m.favorites}</span>
+          </div>
+        </article>`;
+    }
+
+    function visibleMistakes() {
+      const q = state.query.trim().toLowerCase();
+      let list = mistakes.filter((m) => {
+        const hitSubject = state.subject === "全部" || m.subject === state.subject;
+        const haystack = [m.title, m.summary, m.question, m.point, m.subject, m.author, m.tags.join(" ")].join(" ").toLowerCase();
+        return hitSubject && (!q || haystack.includes(q));
+      });
+      if (state.sort === "popular") list.sort((a, b) => b.favorites - a.favorites);
+      else if (state.sort === "challenge") list.sort((a, b) => b.difficulty - a.difficulty || b.favorites - a.favorites);
+      else list.sort((a, b) => b.date.localeCompare(a.date));
+      return list;
+    }
+
+    function render() {
+      const list = visibleMistakes();
+      grid.innerHTML = list.map(card).join("");
+      count.textContent = String(list.length);
+      empty.classList.toggle("show", list.length === 0);
+      grid.querySelectorAll(".mistake-card").forEach((el) => {
+        el.addEventListener("click", () => openDetail(Number(el.dataset.id)));
+        el.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openDetail(Number(el.dataset.id));
+          }
+        });
+      });
+    }
+
+    function openDetail(id) {
+      const m = mistakes.find((item) => item.id === id);
+      if (!m) return;
+      document.getElementById("dialog-title").textContent = m.title;
+      document.getElementById("dialog-meta").innerHTML = `<span>${m.subject}</span><span>难度 ${m.difficulty}/5</span><span>${m.author} · ${m.school}</span><span>♡ ${m.favorites}</span>`;
+      document.getElementById("dialog-question").textContent = m.question;
+      document.getElementById("dialog-point").textContent = m.point;
+      document.getElementById("dialog-answer").textContent = m.answer;
+      answer.hidden = true;
+      reveal.textContent = "显示参考答案";
+      if (typeof detail.showModal === "function") detail.showModal();
+      else detail.setAttribute("open", "");
+    }
+
+    function closeDetail() {
+      if (typeof detail.close === "function") detail.close();
+      else detail.removeAttribute("open");
+    }
+
+    subjectBox.addEventListener("click", (event) => {
+      const btn = event.target.closest(".subject-chip");
+      if (!btn) return;
+      state.subject = btn.dataset.subject;
+      subjectBox.querySelectorAll(".subject-chip").forEach((el) => el.classList.toggle("active", el === btn));
+      render();
+    });
+
+    search.addEventListener("input", () => {
+      state.query = search.value;
+      render();
+    });
+
+    sort.addEventListener("change", () => {
+      state.sort = sort.value;
+      render();
+    });
+
+    reveal.addEventListener("click", () => {
+      answer.hidden = !answer.hidden;
+      reveal.textContent = answer.hidden ? "显示参考答案" : "收起参考答案";
+    });
+
+    document.getElementById("close").addEventListener("click", closeDetail);
+    detail.addEventListener("click", (event) => {
+      if (event.target === detail) closeDetail();
+    });
+
+    document.getElementById("year").textContent = String(new Date().getFullYear());
+    render();
+  </script>
+</body>
+</html>
